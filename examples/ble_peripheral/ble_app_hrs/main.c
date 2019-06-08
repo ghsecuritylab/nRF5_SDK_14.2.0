@@ -94,7 +94,7 @@
 #define HEART_RATE_MEAS_INTERVAL            APP_TIMER_TICKS(1000)                   /**< Heart rate measurement interval (ticks). */
 #define MIN_HEART_RATE                      140                                     /**< Minimum heart rate as returned by the simulated measurement function. */
 #define MAX_HEART_RATE                      300                                     /**< Maximum heart rate as returned by the simulated measurement function. */
-#define HEART_RATE_INCREMENT                10                                      /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
+#define HEART_RATE_INCREMENT                2                                      /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
 
 #define RR_INTERVAL_INTERVAL                APP_TIMER_TICKS(300)                    /**< RR interval interval (ticks). */
 #define MIN_RR_INTERVAL                     100                                     /**< Minimum RR interval as returned by the simulated measurement function. */
@@ -349,6 +349,8 @@ static void battery_level_update(void)
  */
 static void battery_level_meas_timeout_handler(void * p_context)
 {
+		NRF_LOG_INFO("battery_level_meas_timeout_handler run \n");
+	
     UNUSED_PARAMETER(p_context);
     battery_level_update();
 }

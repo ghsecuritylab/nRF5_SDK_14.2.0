@@ -139,7 +139,7 @@ static ble_gap_conn_params_t const m_connection_param =
  *  if these are set to empty strings, the UUIDs defined below will be used
  */
 static char const m_target_periph_name[] = "";      /**< If you want to connect to a peripheral using a given advertising name, type its name here. */
-static bool is_connect_per_addr = false;            /**< If you want to connect to a peripheral with a given address, set this to true and put the correct address in the variable below. */
+static bool is_connect_per_addr = true;            /**< If you want to connect to a peripheral with a given address, set this to true and put the correct address in the variable below. */
 
 static ble_gap_addr_t const m_target_periph_addr =
 {
@@ -148,8 +148,8 @@ static ble_gap_addr_t const m_target_periph_addr =
        BLE_GAP_ADDR_TYPE_RANDOM_STATIC,
        BLE_GAP_ADDR_TYPE_RANDOM_PRIVATE_RESOLVABLE,
        BLE_GAP_ADDR_TYPE_RANDOM_PRIVATE_NON_RESOLVABLE. */
-    .addr_type = BLE_GAP_ADDR_TYPE_RANDOM_STATIC,
-    .addr      = {0x8D, 0xFE, 0x23, 0x86, 0x77, 0xD9}
+    .addr_type = BLE_GAP_ADDR_TYPE_PUBLIC,
+    .addr      = {0xCF, 0xD5, 0x26, 0x1A, 0x9E, 0xA0}
 };
 
 
@@ -507,6 +507,15 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
         case BLE_GAP_EVT_ADV_REPORT:
         {
             bool do_connect = false;
+
+			NRF_LOG_INFO("peer_addr.addr = %x:%x:%x:%x:%x:%x\r", 
+					p_gap_evt->params.adv_report.peer_addr.addr[5],
+					p_gap_evt->params.adv_report.peer_addr.addr[4],
+					p_gap_evt->params.adv_report.peer_addr.addr[3],
+					p_gap_evt->params.adv_report.peer_addr.addr[2],
+					p_gap_evt->params.adv_report.peer_addr.addr[1],
+					p_gap_evt->params.adv_report.peer_addr.addr[0]);
+			
             if (is_connect_per_addr)
             {
                 if (find_peer_addr(&p_gap_evt->params.adv_report, &m_target_periph_addr))

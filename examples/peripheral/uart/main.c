@@ -166,6 +166,7 @@ int main(void)
     {
         uint8_t cr;
         while (app_uart_get(&cr) != NRF_SUCCESS);
+				printf("\r\ncr: %c \r\n", cr);
         while (app_uart_put(cr) != NRF_SUCCESS);
 
         if (cr == 'q' || cr == 'Q')

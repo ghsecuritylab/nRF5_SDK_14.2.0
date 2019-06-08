@@ -101,6 +101,10 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#include "uart_k50.h"
+
+#define BATTERY_LEVEL_MEAS_INTERVAL         APP_TIMER_TICKS(1000)                   /**< Battery level measurement interval (ticks). */
+APP_TIMER_DEF(m_uart_timer_id);
 
 #define PERIPHERAL_ADVERTISING_LED      BSP_BOARD_LED_2
 #define PERIPHERAL_CONNECTED_LED        BSP_BOARD_LED_3
@@ -730,6 +734,15 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
 
         case BLE_GAP_EVT_ADV_REPORT:
         {
+		
+//			NRF_LOG_INFO("peer_addr.addr = %x:%x:%x:%x:%x:%x\r", 
+//					p_gap_evt->params.adv_report.peer_addr.addr[5],
+//					p_gap_evt->params.adv_report.peer_addr.addr[4],
+//					p_gap_evt->params.adv_report.peer_addr.addr[3],
+//					p_gap_evt->params.adv_report.peer_addr.addr[2],
+//					p_gap_evt->params.adv_report.peer_addr.addr[1],
+//					p_gap_evt->params.adv_report.peer_addr.addr[0]);
+			
             if (strlen(m_target_periph_name) != 0)
             {
                 if (find_adv_name(&p_gap_evt->params.adv_report, m_target_periph_name))
@@ -1276,15 +1289,6 @@ static void log_init(void)
 }
 
 
-/**@brief Function for initializing the timer.
- */
-static void timer_init(void)
-{
-    ret_code_t err_code = app_timer_init();
-    APP_ERROR_CHECK(err_code);
-}
-
-
 /** @brief Function to sleep until a BLE event is received by the application.
  */
 static void power_manage(void)
@@ -1293,11 +1297,35 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
+/**@brief Function for initializing the timer.
+ */
+static void timer_init(void)
+{
+		// Initialize timer module.
+    ret_code_t err_code = app_timer_init();
+    APP_ERROR_CHECK(err_code);
+	
+	  // Create timers.
+    err_code = app_timer_create(&m_uart_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                uart_timeout_handler);
+    APP_ERROR_CHECK(err_code);
+}
+
+static void application_timers_start(void)
+{
+    ret_code_t err_code;
+
+    // Start application timers.
+    err_code = app_timer_start(m_uart_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+}
 
 int main(void)
 {
     bool erase_bonds;
 
+		uart_init();
     log_init();
     timer_init();
     buttons_leds_init(&erase_bonds);
@@ -1324,6 +1352,7 @@ int main(void)
     }
 
     NRF_LOG_INFO("Relay example started.");
+		application_timers_start();
 
     for (;;)
     {
