@@ -103,15 +103,19 @@
 
 #include "uart_k50.h"
 
-#define BATTERY_LEVEL_MEAS_INTERVAL         APP_TIMER_TICKS(1000)                   /**< Battery level measurement interval (ticks). */
-APP_TIMER_DEF(m_uart_timer_id);
+#define UART_TX_MEAS_INTERVAL         APP_TIMER_TICKS(1000)                   /**< Battery level measurement interval (ticks). */
+APP_TIMER_DEF(m_uart_tx_timer_id);
+
+#define UART_RX_MEAS_INTERVAL         APP_TIMER_TICKS(100)                   /**< Battery level measurement interval (ticks). */
+APP_TIMER_DEF(m_uart_rx_timer_id);
+
 
 #define PERIPHERAL_ADVERTISING_LED      BSP_BOARD_LED_2
 #define PERIPHERAL_CONNECTED_LED        BSP_BOARD_LED_3
 #define CENTRAL_SCANNING_LED            BSP_BOARD_LED_0
 #define CENTRAL_CONNECTED_LED           BSP_BOARD_LED_1
 
-#define DEVICE_NAME                     "Relay"                                     /**< Name of device used for advertising. */
+#define DEVICE_NAME                     "Q-Track Digital Board"                                     /**< Name of device used for advertising. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                       /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                300                                         /**< The advertising interval (in units of 0.625 ms). This value corresponds to 187.5 ms. */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout in units of seconds. */
@@ -183,7 +187,7 @@ static uint16_t m_conn_handle_rscs_c = BLE_CONN_HANDLE_INVALID;     /**< Connect
 /**@brief names which the central applications will scan for, and which will be advertised by the peripherals.
  *  if these are set to empty strings, the UUIDs defined below will be used
  */
-static char const m_target_periph_name[] = "";
+static char const m_target_periph_name[] = "Polar OH1 26D5CF21";
 
 /**@brief UUIDs which the central applications will scan for if the name above is set to an empty string,
  * and which will be advertised by the peripherals.
@@ -459,6 +463,12 @@ static void hrs_c_evt_handler(ble_hrs_c_t * p_hrs_c, ble_hrs_c_evt_t * p_hrs_c_e
             ret_code_t err_code;
 
             NRF_LOG_INFO("Heart Rate = %d", p_hrs_c_evt->params.hrm.hr_value);
+						//将状态置为正在收发数据
+						gSend_HRS.status = RECV_HRS;
+						//更新心率数据
+						gSend_HRS.hrs_data = p_hrs_c_evt->params.hrm.hr_value;
+						//闪灯
+						nrf_gpio_pin_toggle(BSP_LED_0);
 
             err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, p_hrs_c_evt->params.hrm.hr_value);
             if ((err_code != NRF_SUCCESS) &&
@@ -665,6 +675,10 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
         case BLE_GAP_EVT_CONNECTED:
         {
             NRF_LOG_INFO("Central connected");
+
+			//将状态置为连接
+			gSend_HRS.status = CONNECTED;
+			
             // If no Heart Rate sensor or RSC sensor is currently connected, try to find them on this peripheral.
             if (   (m_conn_handle_hrs_c  == BLE_CONN_HANDLE_INVALID)
                 || (m_conn_handle_rscs_c == BLE_CONN_HANDLE_INVALID))
@@ -705,6 +719,11 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
             {
                 NRF_LOG_INFO("HRS central disconnected (reason: %d)",
                              p_gap_evt->params.disconnected.reason);
+							
+								//将状态置为未连接
+								gSend_HRS.status = NOT_CONNECTED;
+								//关闭LED0
+								nrf_gpio_pin_set(BSP_LED_0);
 
                 m_conn_handle_hrs_c = BLE_CONN_HANDLE_INVALID;
             }
@@ -848,13 +867,17 @@ static void on_ble_peripheral_evt(ble_evt_t const * p_ble_evt)
     {
         case BLE_GAP_EVT_CONNECTED:
             NRF_LOG_INFO("Peripheral connected");
-            bsp_board_led_off(PERIPHERAL_ADVERTISING_LED);
-            bsp_board_led_on(PERIPHERAL_CONNECTED_LED);
+			nrf_gpio_pin_clear(BSP_LED_1);
+		
+            //bsp_board_led_off(PERIPHERAL_ADVERTISING_LED);
+            //bsp_board_led_on(PERIPHERAL_CONNECTED_LED);
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
             NRF_LOG_INFO("Peripheral disconnected");
-            bsp_board_led_off(PERIPHERAL_CONNECTED_LED);
+			nrf_gpio_pin_set(BSP_LED_1);
+		
+            //bsp_board_led_off(PERIPHERAL_CONNECTED_LED);
             break;
 
 #ifndef S140
@@ -1109,6 +1132,7 @@ static void buttons_leds_init(bool * p_erase_bonds)
     APP_ERROR_CHECK(err_code);
 
     *p_erase_bonds = (startup_event == BSP_EVENT_CLEAR_BONDING_DATA);
+
 }
 
 
@@ -1306,9 +1330,15 @@ static void timer_init(void)
     APP_ERROR_CHECK(err_code);
 	
 	  // Create timers.
-    err_code = app_timer_create(&m_uart_timer_id,
+    err_code = app_timer_create(&m_uart_tx_timer_id,
                                 APP_TIMER_MODE_REPEATED,
-                                uart_timeout_handler);
+                                uart_tx_timeout_handler);
+	APP_ERROR_CHECK(err_code);
+
+	err_code = app_timer_create(&m_uart_rx_timer_id,
+									APP_TIMER_MODE_REPEATED,
+									uart_rx_timeout_handler);
+
     APP_ERROR_CHECK(err_code);
 }
 
@@ -1317,7 +1347,9 @@ static void application_timers_start(void)
     ret_code_t err_code;
 
     // Start application timers.
-    err_code = app_timer_start(m_uart_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
+    err_code = app_timer_start(m_uart_tx_timer_id, UART_TX_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+	err_code = app_timer_start(m_uart_rx_timer_id, UART_RX_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -1339,7 +1371,7 @@ int main(void)
     rscs_c_init();
     services_init();
     advertising_init();
-
+	
     if (erase_bonds == true)
     {
         // Scanning and advertising is done upon PM_EVT_PEERS_DELETE_SUCCEEDED event.
@@ -1351,8 +1383,11 @@ int main(void)
         adv_scan_start();
     }
 
-    NRF_LOG_INFO("Relay example started.");
+    NRF_LOG_INFO("Q-Track Relay example started.");
 		application_timers_start();
+
+	nrf_gpio_pin_set(BSP_LED_0);
+	nrf_gpio_pin_set(BSP_LED_1);
 
     for (;;)
     {

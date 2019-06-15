@@ -455,16 +455,16 @@ static void power_usb_event_handler(nrf_drv_power_usb_evt_t event)
                 app_usbd_enable();
             }
 
-            nrf_gpio_pin_set(BSP_LED_0);
-            nrf_gpio_pin_clear(BSP_LED_1);
+            //nrf_gpio_pin_set(BSP_LED_0);
+            //nrf_gpio_pin_clear(BSP_LED_1);
         } break;
 
         case NRF_DRV_POWER_USB_EVT_REMOVED:
         {
             NRF_LOG_INFO("USB power removed");
             app_usbd_stop();
-            nrf_gpio_pin_set(BSP_LED_1);
-            nrf_gpio_pin_clear(BSP_LED_0);
+            //nrf_gpio_pin_set(BSP_LED_1);
+            //nrf_gpio_pin_clear(BSP_LED_0);
         } break;
 
         case NRF_DRV_POWER_USB_EVT_READY:

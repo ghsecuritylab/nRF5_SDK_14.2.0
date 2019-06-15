@@ -59,14 +59,14 @@ bool bsp_board_led_state_get(uint32_t led_idx)
 
 void bsp_board_led_on(uint32_t led_idx)
 {
-        ASSERT(led_idx < LEDS_NUMBER);
-        nrf_gpio_pin_write(m_board_led_list[led_idx], LEDS_ACTIVE_STATE ? 1 : 0);
+//        ASSERT(led_idx < LEDS_NUMBER);
+//        nrf_gpio_pin_write(m_board_led_list[led_idx], LEDS_ACTIVE_STATE ? 1 : 0);
 }
 
 void bsp_board_led_off(uint32_t led_idx)
 {
-    ASSERT(led_idx < LEDS_NUMBER);
-    nrf_gpio_pin_write(m_board_led_list[led_idx], LEDS_ACTIVE_STATE ? 0 : 1);
+//    ASSERT(led_idx < LEDS_NUMBER);
+//    nrf_gpio_pin_write(m_board_led_list[led_idx], LEDS_ACTIVE_STATE ? 0 : 1);
 }
 
 void bsp_board_leds_off(void)

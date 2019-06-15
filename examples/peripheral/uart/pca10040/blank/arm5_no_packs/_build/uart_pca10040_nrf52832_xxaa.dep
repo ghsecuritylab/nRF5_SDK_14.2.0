@@ -31,7 +31,7 @@ I (..\..\..\..\..\..\components\drivers_nrf\hal\nrf_gpio.h)(0x5A0B5C8F)
 I (..\..\..\..\..\..\components\drivers_nrf\hal\nrf_peripherals.h)(0x5A0B5C8F)
 I (C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.15.0\Device\Include\nrf52832_peripherals.h)(0x59D2F530)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
-I (..\..\..\..\..\..\components\boards\pca10040.h)(0x5A0B5C8F)
+I (..\..\..\..\..\..\components\boards\pca10040.h)(0x5D021CFD)
 I (..\..\..\..\..\..\components\drivers_nrf\hal\nrf_uart.h)(0x5A0B5C8F)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x5475F300)
 I (..\..\..\..\..\..\components\drivers_nrf\hal\nrf_uarte.h)(0x5A0B5C8F)
@@ -64,7 +64,7 @@ I (..\config\sdk_config.h)(0x5A0B5C94)
 I (..\..\..\..\..\..\components\libraries\util\nordic_common.h)(0x5A0B5C8F)
 I (..\..\..\..\..\..\components\libraries\util\app_error_weak.h)(0x5A0B5C8F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5475F300)
-I (..\..\..\..\..\..\components\boards\pca10040.h)(0x5A0B5C8F)
+I (..\..\..\..\..\..\components\boards\pca10040.h)(0x5D021CFD)
 F (..\..\..\..\..\..\components\drivers_nrf\common\nrf_drv_common.c)(0x5A0B5C8F)(--c99 -c --cpu Cortex-M4.fp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I..\..\..\config -I..\..\..\..\..\..\components -I..\..\..\..\..\..\components\boards -I..\..\..\..\..\..\components\drivers_nrf\common -I..\..\..\..\..\..\components\drivers_nrf\delay -I..\..\..\..\..\..\components\drivers_nrf\hal -I..\..\..\..\..\..\components\drivers_nrf\nrf_soc_nosd -I..\..\..\..\..\..\components\drivers_nrf\uart -I..\..\..\..\..\..\components\libraries\atomic -I..\..\..\..\..\..\components\libraries\balloc -I..\..\..\..\..\..\components\libraries\bsp -I..\..\..\..\..\..\components\libraries\experimental_log -I..\..\..\..\..\..\components\libraries\experimental_log\src -I..\..\..\..\..\..\components\libraries\experimental_memobj -I..\..\..\..\..\..\components\libraries\experimental_section_vars -I..\..\..\..\..\..\components\libraries\fifo -I..\..\..\..\..\..\components\libraries\strerror -I..\..\..\..\..\..\components\libraries\uart -I..\..\..\..\..\..\components\libraries\util -I..\..\..\..\..\..\components\toolchain -I..\..\.. -I..\config --reduce_paths-I F:\GitHub\nRF5_SDK_14.2.0\examples\peripheral\uart\pca10040\blank\arm5_no_packs\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.15.0\Device\Include-I C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.24.1\Device\Include-D__UVISION_VERSION="514" -D_RTE_ -DNRF52 -DBOARD_PCA10040 -DBSP_DEFINES_ONLY -DCONFIG_GPIO_AS_PINRESET -DFLOAT_ABI_HARD -DNRF52 -DNRF52832_XXAA -DNRF52_PAN_74-o .\_build\nrf_drv_common.o --omf_browse .\_build\nrf_drv_common.crf --depend .\_build\nrf_drv_common.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stddef.h)(0x5475F300)
 I (..\..\..\..\..\..\components\drivers_nrf\common\nrf_drv_common.h)(0x5A0B5C8F)

@@ -49,23 +49,25 @@ extern "C" {
 // LEDs definitions for PCA10040
 #define LEDS_NUMBER    4
 
-#define LED_START      17
+#if (BOARD_EBYTE == 1)
 #define LED_1          17
 #define LED_2          18
-#define LED_3          19
-#define LED_4          20
-#define LED_STOP       20
+#endif 
+
+#if (BOARD_K50 == 1)
+#define LED_1          11
+#define LED_2          12
+#endif 
+
 
 #define LEDS_ACTIVE_STATE 0
 
 #define LEDS_INV_MASK  LEDS_MASK
 
-#define LEDS_LIST { LED_1, LED_2, LED_3, LED_4 }
+#define LEDS_LIST { LED_1, LED_2 }
 
 #define BSP_LED_0      LED_1
 #define BSP_LED_1      LED_2
-#define BSP_LED_2      LED_3
-#define BSP_LED_3      LED_4
 
 #define BUTTONS_NUMBER 4
 
@@ -86,8 +88,16 @@ extern "C" {
 #define BSP_BUTTON_2   BUTTON_3
 #define BSP_BUTTON_3   BUTTON_4
 
-#define RX_PIN_NUMBER  8
-#define TX_PIN_NUMBER  6
+#if (BOARD_EBYTE == 1)
+	#define RX_PIN_NUMBER  8
+	#define TX_PIN_NUMBER  6
+#endif 
+
+#if (BOARD_K50 == 1)
+	#define RX_PIN_NUMBER  4
+	#define TX_PIN_NUMBER  3
+#endif
+
 #define CTS_PIN_NUMBER 7
 #define RTS_PIN_NUMBER 5
 #define HWFC           true

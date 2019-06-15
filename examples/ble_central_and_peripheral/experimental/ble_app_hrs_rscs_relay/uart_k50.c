@@ -19,6 +19,8 @@
 #define UART_TX_BUF_SIZE 256                         /**< UART TX buffer size. */
 #define UART_RX_BUF_SIZE 256                         /**< UART RX buffer size. */
 
+struct Send_HRS gSend_HRS;
+
 void uart_error_handle(app_uart_evt_t * p_event)
 {
     if (p_event->evt_type == APP_UART_COMMUNICATION_ERROR)
@@ -54,6 +56,11 @@ void uart_init(void)
                          err_code);
 
     APP_ERROR_CHECK(err_code);
+			
+	gSend_HRS.head = 0x10;
+	gSend_HRS.status = NOT_CONNECTED;
+	gSend_HRS.hrs_data = 0x00;
+	gSend_HRS.CRC = 0x00;
 }
 
 uint16_t uart_read(uint8_t * buff, uint16_t len)
@@ -87,16 +94,39 @@ uint16_t uart_write(uint8_t * buff, uint16_t len)
 	return i;
 }
 
-void uart_timeout_handler(void * p_context)
+uint8_t And_Check(uint8_t * data, uint16_t len)
+{
+		uint16_t sum = 0;
+		uint16_t i = 0;
+	
+	for(i=0; i<len-1; i++)
+	{
+		sum += data[i];
+	}
+	
+	return (sum&0xff);
+	
+}
+
+void uart_tx_timeout_handler(void * p_context)
+{
+	//NRF_LOG_INFO("uart_tx_timeout_handler\n");
+	//nrf_gpio_pin_set(BSP_LED_0);
+	
+	gSend_HRS.CRC = And_Check((uint8_t *)&gSend_HRS, sizeof(struct Send_HRS));
+	uart_write((uint8_t *)&gSend_HRS, sizeof(struct Send_HRS));
+}
+
+void uart_rx_timeout_handler(void * p_context)
 {
 	uint8_t i = 0;
 	uint16_t len = 0;
 	uint8_t read_buff[10];
-	
-	nrf_gpio_pin_toggle(BSP_LED_0);
+
+	//nrf_gpio_pin_toggle(BSP_LED_0);
 	
 	len = uart_read(read_buff, 10);
-	NRF_LOG_INFO("len = %d", len);
+	//NRF_LOG_INFO("len = %d", len);
 	if(len != 0)
 	{
 		uart_write(read_buff, len);
