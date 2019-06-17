@@ -57,7 +57,7 @@
 #endif
 
 //==========================================================
-// <q> BOARD_K50  - Proget board
+// <q> BOARD_K50  - Progect board
 
 #ifndef BOARD_K50
 #define BOARD_K50 0

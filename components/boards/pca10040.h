@@ -94,8 +94,8 @@ extern "C" {
 #endif 
 
 #if (BOARD_K50 == 1)
-	#define RX_PIN_NUMBER  4
-	#define TX_PIN_NUMBER  3
+	#define RX_PIN_NUMBER  8
+	#define TX_PIN_NUMBER  7
 #endif
 
 #define CTS_PIN_NUMBER 7
