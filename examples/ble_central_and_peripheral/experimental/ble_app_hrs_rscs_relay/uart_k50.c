@@ -3,6 +3,9 @@
 #include "app_uart.h"
 #include "bsp.h"
 #include "uart_k50.h"
+#include "main.h"
+#include <ble_gap.h>
+#include <ble_hci.h>
 
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
@@ -20,6 +23,25 @@
 #define UART_RX_BUF_SIZE 256                         /**< UART RX buffer size. */
 
 struct Send_HRS gSend_HRS;
+struct Scan_Result gScan_Result;
+
+enum e_CONNECT_STATUS Connect_Status = CONNECT_IDLE;
+
+
+//查询一个MAC地址是否已经存在
+bool find_mac_addr(uint8_t * src, struct Scan_Result * dts)
+{
+	uint32_t i = 0;
+
+	NRF_LOG_INFO("src = %x %x %x %x %x %x", src[0], src[1], src[2], src[3], src[4], src[5]);
+
+	for(i=0; i<DEV_INOF_MAX; i++)
+	{
+		if(memcmp(src, dts->dev_inof[i].addr.addr, BLE_GAP_ADDR_LEN) == 0)
+			return true;
+	}
+	return false;
+}
 
 void uart_error_handle(app_uart_evt_t * p_event)
 {
@@ -58,6 +80,7 @@ void uart_init(void)
     APP_ERROR_CHECK(err_code);
 			
 	gSend_HRS.head = 0x10;
+	gSend_HRS.type = 0x02;
 	gSend_HRS.status = NOT_CONNECTED;
 	gSend_HRS.hrs_data = 0x00;
 	gSend_HRS.CRC = 0x00;
@@ -113,24 +136,116 @@ void uart_tx_timeout_handler(void * p_context)
 	//NRF_LOG_INFO("uart_tx_timeout_handler\n");
 	//nrf_gpio_pin_set(BSP_LED_0);
 	
-	gSend_HRS.CRC = And_Check((uint8_t *)&gSend_HRS, sizeof(struct Send_HRS));
-	uart_write((uint8_t *)&gSend_HRS, sizeof(struct Send_HRS));
+	//gSend_HRS.CRC = And_Check((uint8_t *)&gSend_HRS, sizeof(struct Send_HRS));
+	//uart_write((uint8_t *)&gSend_HRS, sizeof(struct Send_HRS));
 }
 
 void uart_rx_timeout_handler(void * p_context)
 {
-	uint8_t i = 0;
+	ret_code_t err_code;
 	uint16_t len = 0;
 	uint8_t read_buff[10];
-
-	//nrf_gpio_pin_toggle(BSP_LED_0);
 	
 	len = uart_read(read_buff, 10);
-	//NRF_LOG_INFO("len = %d", len);
 	if(len != 0)
 	{
-		uart_write(read_buff, len);
-		for(i=0; i<len; i++)
-			NRF_LOG_INFO("read[%d] = %c", i, read_buff[i]);
+		//开始扫描指令
+		if( (read_buff[0] == 0xf1) && (read_buff[1] == 0x01) && (read_buff[3] == 0x55) )
+		{
+			Connect_Status = CONNECT_SCAN;
+		}
+		//连接指令
+		if( (read_buff[0] == 0xf1) && (read_buff[1] == 0x02) && (read_buff[3] == 0x55)  )
+		{
+			err_code = sd_ble_gap_connect(&gScan_Result.dev_inof[read_buff[2]].addr,
+                                                  &m_scan_params,
+                                                  &m_connection_param,
+                                                  1);
+            if (err_code != NRF_SUCCESS)
+            {
+                NRF_LOG_INFO("Connection Request Failed, reason %d", err_code);
+            }
+			else
+			{
+				Connect_Status = CONNECT_SEND;
+			}
+		}
 	}
 }
+
+
+void connect_fsm_handler(void * p_context)
+{
+	ret_code_t err_code;
+	static uint32_t count = 0;
+	static uint32_t send_count = 0;
+
+	switch(Connect_Status)
+	{
+		//空闲状态
+		case CONNECT_IDLE:
+		{
+		
+		}
+		break;
+		//扫描开始
+		case CONNECT_SCAN:
+		{
+			//先断开之前的连接
+			sd_ble_gap_disconnect(m_conn_handle_hrs_c, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+		
+			NRF_LOG_INFO("scan_start!!!!!!!!!!!!!");
+			scan_start();
+			Connect_Status = CONNECT_SCAN_ING;
+			count = 0;
+			memset(&gScan_Result, 0x00, sizeof(struct Scan_Result));
+		}
+		break;
+		//扫描中
+		case CONNECT_SCAN_ING:
+		{
+			//计时,100ms一次
+			count ++;
+			if(count > 50)
+			{
+				Connect_Status = CONNECT_SCAN_COMPLETED;
+			}
+		}
+		break;
+		//扫描完成
+		case CONNECT_SCAN_COMPLETED:
+		{
+			(void) sd_ble_gap_scan_stop();
+		
+			//发送数据给K50
+			gScan_Result.head = 0x1F;
+			gScan_Result.type = 0x01;
+
+			NRF_LOG_INFO("dev_name = %d", gScan_Result.num );
+			for(uint32_t i = 0; i<gScan_Result.num; i++)
+			{
+				NRF_LOG_INFO("dev_name %d = %s", i, gScan_Result.dev_inof[i].name );
+				NRF_LOG_FLUSH();
+				NRF_LOG_INFO("mac = %x %x %x %x %x %x", gScan_Result.dev_inof[i].addr.addr[0], gScan_Result.dev_inof[i].addr.addr[1],
+					gScan_Result.dev_inof[i].addr.addr[2], gScan_Result.dev_inof[i].addr.addr[3], gScan_Result.dev_inof[i].addr.addr[4], 
+					gScan_Result.dev_inof[i].addr.addr[5]);
+			}
+
+			uart_write((uint8_t *)&gScan_Result, sizeof(struct Scan_Result));
+			Connect_Status = CONNECT_IDLE;
+		}
+		break;
+		//发送心率数据
+		case CONNECT_SEND:
+		{
+			send_count ++;
+			if( send_count >= 10 )
+			{
+				send_count = 0;
+				uart_write((uint8_t *)&gSend_HRS, sizeof(struct Send_HRS));
+			}
+		}
+		break;
+	}
+}
+

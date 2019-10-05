@@ -506,27 +506,26 @@ raries\util -I..\..\..\..\..\..\..\components\softdevice\common -I..\..\..\..\.
 .\..\..\components\softdevice\s132\headers -I..\..\..\..\..\..\..\components\so
 ftdevice\s132\headers\nrf52 -I..\..\..\..\..\..\..\components\toolchain -I..\..
 \..\..\..\..\..\external\fprintf -I..\..\..\..\..\..\..\external\segger_rtt -I.
-.\config -IF:\GitHub\nRF5_SDK_14.2.0\examples\ble_central_and_peripheral\experi
+.\config -ID:\GitHub\nRF5_SDK_14.2.0\examples\ble_central_and_peripheral\experi
 mental\ble_app_hrs_rscs_relay\pca10040\s132\arm5_no_packs\RTE -IC:\Keil_v5\ARM\
 PACK\ARM\CMSIS\4.5.0\CMSIS\Include -IC:\Keil_v5\ARM\PACK\NordicSemiconductor\nR
-F_DeviceFamilyPack\8.15.0\Device\Include -IC:\Keil_v5\ARM\PACK\NordicSemiconduc
-tor\nRF_DeviceFamilyPack\8.24.1\Device\Include --predefine="__MICROLIB SETA 1" 
---predefine="__UVISION_VERSION SETA 514" --predefine="_RTE_ SETA 1" --predefine
-="NRF52 SETA 1" --predefine="BOARD_PCA10040 SETA 1" --predefine="CONFIG_GPIO_AS
-_PINRESET SETA 1" --predefine="FLOAT_ABI_HARD SETA 1" --predefine="NRF52 SETA 1
-" --predefine="NRF52832_XXAA SETA 1" --predefine="NRF52_PAN_74 SETA 1" --predef
-ine="NRF_SD_BLE_API_VERSION SETA 5" --predefine="S132 SETA 1" --predefine="SOFT
-DEVICE_PRESENT SETA 1" --predefine="SWI_DISABLE0 SETA 1" --predefine="__HEAP_SI
-ZE SETA 0" --cpreproc_opts=-DBOARD_PCA10040,-DCONFIG_GPIO_AS_PINRESET,-DFLOAT_A
+F_DeviceFamilyPack\8.15.0\Device\Include --predefine="__MICROLIB SETA 1" --pred
+efine="__UVISION_VERSION SETA 514" --predefine="_RTE_ SETA 1" --predefine="NRF5
+2 SETA 1" --predefine="BOARD_PCA10040 SETA 1" --predefine="CONFIG_GPIO_AS_PINRE
+SET SETA 1" --predefine="FLOAT_ABI_HARD SETA 1" --predefine="NRF52 SETA 1" --pr
+edefine="NRF52832_XXAA SETA 1" --predefine="NRF52_PAN_74 SETA 1" --predefine="N
+RF_SD_BLE_API_VERSION SETA 5" --predefine="S132 SETA 1" --predefine="SOFTDEVICE
+_PRESENT SETA 1" --predefine="SWI_DISABLE0 SETA 1" --predefine="__HEAP_SIZE SET
+A 0" --cpreproc_opts=-DBOARD_PCA10040,-DCONFIG_GPIO_AS_PINRESET,-DFLOAT_ABI_HAR
+D,-DNRF52,-DNRF52832_XXAA,-DNRF52_PAN_74,-DNRF_SD_BLE_API_VERSION=5,-DS132,-DSO
 
 
 
 ARM Macro Assembler    Page 9 
 
 
-BI_HARD,-DNRF52,-DNRF52832_XXAA,-DNRF52_PAN_74,-DNRF_SD_BLE_API_VERSION=5,-DS13
-2,-DSOFTDEVICE_PRESENT,-DSWI_DISABLE0,-D__HEAP_SIZE=0 --list=.\_build\arm_start
-up_nrf52.lst RTE\Device\nRF52832_xxAA\arm_startup_nrf52.s
+FTDEVICE_PRESENT,-DSWI_DISABLE0,-D__HEAP_SIZE=0 --list=.\_build\arm_startup_nrf
+52.lst RTE\Device\nRF52832_xxAA\arm_startup_nrf52.s
 
 
 

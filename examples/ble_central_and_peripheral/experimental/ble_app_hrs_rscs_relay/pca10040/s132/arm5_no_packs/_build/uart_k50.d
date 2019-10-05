@@ -36,6 +36,11 @@
 .\_build\uart_k50.o: ..\..\..\..\..\..\..\components\boards\pca10040.h
 .\_build\uart_k50.o: ..\..\..\..\..\..\..\components\libraries\button\app_button.h
 .\_build\uart_k50.o: ..\..\..\uart_k50.h
+.\_build\uart_k50.o: ..\..\..\..\..\..\..\components\softdevice\s132\headers\ble_gap.h
+.\_build\uart_k50.o: ..\..\..\..\..\..\..\components\softdevice\s132\headers\ble_types.h
+.\_build\uart_k50.o: ..\..\..\..\..\..\..\components\softdevice\s132\headers\ble_ranges.h
+.\_build\uart_k50.o: ..\..\..\main.h
+.\_build\uart_k50.o: ..\..\..\..\..\..\..\components\softdevice\s132\headers\ble_hci.h
 .\_build\uart_k50.o: ..\..\..\..\..\..\..\components\libraries\experimental_log\nrf_log.h
 .\_build\uart_k50.o: ..\..\..\..\..\..\..\components\libraries\util\sdk_common.h
 .\_build\uart_k50.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

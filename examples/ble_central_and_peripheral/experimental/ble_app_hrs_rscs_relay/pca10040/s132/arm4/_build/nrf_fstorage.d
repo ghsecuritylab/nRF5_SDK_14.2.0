@@ -1,0 +1,10 @@
+.\_build\nrf_fstorage.o: ..\..\..\..\..\..\..\components\libraries\fstorage\nrf_fstorage.c
+.\_build\nrf_fstorage.o: ..\config\sdk_config.h
+.\_build\nrf_fstorage.o: ..\..\..\..\..\..\..\components\libraries\fstorage\nrf_fstorage.h
+.\_build\nrf_fstorage.o: C:\Keil_v4\ARM\ARMCC\bin\..\include\stdint.h
+.\_build\nrf_fstorage.o: C:\Keil_v4\ARM\ARMCC\bin\..\include\stdbool.h
+.\_build\nrf_fstorage.o: ..\..\..\..\..\..\..\components\libraries\util\sdk_errors.h
+.\_build\nrf_fstorage.o: ..\..\..\..\..\..\..\components\softdevice\s132\headers\nrf_error.h
+.\_build\nrf_fstorage.o: ..\..\..\..\..\..\..\components\libraries\experimental_section_vars\nrf_section.h
+.\_build\nrf_fstorage.o: ..\..\..\..\..\..\..\components\libraries\util\nordic_common.h
+.\_build\nrf_fstorage.o: C:\Keil_v4\ARM\ARMCC\bin\..\include\stddef.h

@@ -84,11 +84,12 @@ NRF_SDH_SOC_OBSERVER(_name ## _soc_obs,                                         
 /**@brief   Advertising modes. */
 typedef enum
 {
-    BLE_ADV_MODE_IDLE,          /**< Idle; no connectable advertising is ongoing. */
-    BLE_ADV_MODE_DIRECTED,      /**< Directed advertising attempts to connect to the most recently disconnected peer. */
-    BLE_ADV_MODE_DIRECTED_SLOW, /**< Directed advertising (low duty cycle) attempts to connect to the most recently disconnected peer. */
-    BLE_ADV_MODE_FAST,          /**< Fast advertising will connect to any peer device, or filter with a whitelist if one exists. */
-    BLE_ADV_MODE_SLOW,          /**< Slow advertising is similar to fast advertising. By default, it uses a longer advertising interval and time-out than fast advertising. However, these options are defined by the user. */
+    BLE_ADV_MODE_IDLE,          /**< 闲;没有可连接的广告正在进行。 Idle; no connectable advertising is ongoing. */
+    BLE_ADV_MODE_DIRECTED,      /**< 定向广告尝试连接到最近断开连接的对等方。 Directed advertising attempts to connect to the most recently disconnected peer. */
+    BLE_ADV_MODE_DIRECTED_SLOW, /**< 定向广告（低占空比）尝试连接到最近断开连接的对等方。 Directed advertising (low duty cycle) attempts to connect to the most recently disconnected peer. */
+    BLE_ADV_MODE_FAST,          /**< 快速广告将连接到任何对等设备，或者如果存在白名单过滤器。 Fast advertising will connect to any peer device, or filter with a whitelist if one exists. */
+    BLE_ADV_MODE_SLOW,          /**< Slow advertising is similar to fast advertising. By default, it uses a longer advertising interval and time-out than fast advertising. However, these options are defined by the user.
+    									慢速广告类似于快速广告。默认情况下，与快速广告相比，它使用更长的广告间隔和超时。但是，这些选项由用户定义。*/
 } ble_adv_mode_t;
 
 /**@brief   Advertising events.

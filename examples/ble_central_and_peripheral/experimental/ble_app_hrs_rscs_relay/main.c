@@ -109,6 +109,8 @@ APP_TIMER_DEF(m_uart_tx_timer_id);
 #define UART_RX_MEAS_INTERVAL         APP_TIMER_TICKS(100)                   /**< Battery level measurement interval (ticks). */
 APP_TIMER_DEF(m_uart_rx_timer_id);
 
+#define CONNECT_MEAS_INTERVAL         APP_TIMER_TICKS(100)                   /**< Battery level measurement interval (ticks). */
+APP_TIMER_DEF(m_connect_timer_id);
 
 #define PERIPHERAL_ADVERTISING_LED      BSP_BOARD_LED_2
 #define PERIPHERAL_CONNECTED_LED        BSP_BOARD_LED_3
@@ -181,7 +183,7 @@ NRF_BLE_GATT_DEF(m_gatt);                                           /**< GATT mo
 BLE_ADVERTISING_DEF(m_advertising);                                 /**< Advertising module instance. */
 BLE_DB_DISCOVERY_ARRAY_DEF(m_db_discovery, 2);                      /**< Database discovery module instances. */
 
-static uint16_t m_conn_handle_hrs_c  = BLE_CONN_HANDLE_INVALID;     /**< Connection handle for the HRS central application */
+uint16_t m_conn_handle_hrs_c  = BLE_CONN_HANDLE_INVALID;     /**< Connection handle for the HRS central application */
 static uint16_t m_conn_handle_rscs_c = BLE_CONN_HANDLE_INVALID;     /**< Connection handle for the RSC central application */
 
 /**@brief names which the central applications will scan for, and which will be advertised by the peripherals.
@@ -199,7 +201,7 @@ static ble_uuid_t m_adv_uuids[] =
 };
 
 /**@brief Parameters used when scanning. */
-static ble_gap_scan_params_t const m_scan_params =
+ble_gap_scan_params_t const m_scan_params =
 {
     .active   = 1,
     .interval = SCAN_INTERVAL,
@@ -215,7 +217,7 @@ static ble_gap_scan_params_t const m_scan_params =
 };
 
 /**@brief Connection parameters requested for connection. */
-static ble_gap_conn_params_t const m_connection_param =
+ble_gap_conn_params_t const m_connection_param =
 {
     MIN_CONNECTION_INTERVAL,
     MAX_CONNECTION_INTERVAL,
@@ -287,7 +289,7 @@ static uint32_t adv_report_parse(uint8_t type, data_t * p_advdata, data_t * p_ty
 
 /**@brief Function for initiating scanning.
  */
-static void scan_start(void)
+void scan_start(void)
 {
     ret_code_t err_code;
 
@@ -313,7 +315,7 @@ static void adv_scan_start(void)
     {
         // Start scanning for peripherals and initiate connection to devices which
         // advertise Heart Rate or Running speed and cadence UUIDs.
-        scan_start();
+        //scan_start();
 
         // Turn on the LED to signal scanning.
         bsp_board_led_on(CENTRAL_SCANNING_LED);
@@ -674,7 +676,7 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
         // discovery, update LEDs status and resume scanning if necessary.
         case BLE_GAP_EVT_CONNECTED:
         {
-            NRF_LOG_INFO("Central connected");
+            NRF_LOG_INFO("BLE_GAP_EVT_CONNECTED");
 
 			//将状态置为连接
 			gSend_HRS.status = CONNECTED;
@@ -705,9 +707,9 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
             }
             else
             {
-                // Resume scanning.
+                // Resume scanning. 这里如果不屏蔽，则连接设备后会再次开始扫描
                 bsp_board_led_on(CENTRAL_SCANNING_LED);
-                scan_start();
+                //scan_start();
             }
         } break; // BLE_GAP_EVT_CONNECTED
 
@@ -715,6 +717,7 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
         // update the LEDs status and start scanning again.
         case BLE_GAP_EVT_DISCONNECTED:
         {
+        	 NRF_LOG_INFO("BLE_GAP_EVT_DISCONNECTED");
             if (p_gap_evt->conn_handle == m_conn_handle_hrs_c)
             {
                 NRF_LOG_INFO("HRS central disconnected (reason: %d)",
@@ -738,8 +741,8 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
             if (   (m_conn_handle_rscs_c == BLE_CONN_HANDLE_INVALID)
                 || (m_conn_handle_hrs_c  == BLE_CONN_HANDLE_INVALID))
             {
-                // Start scanning
-                scan_start();
+                // Start scanning 这里如果不屏蔽，则连接设备后会再次开始扫描
+                //scan_start();
 
                 // Update LEDs status.
                 bsp_board_led_on(CENTRAL_SCANNING_LED);
@@ -761,7 +764,46 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
 //					p_gap_evt->params.adv_report.peer_addr.addr[2],
 //					p_gap_evt->params.adv_report.peer_addr.addr[1],
 //					p_gap_evt->params.adv_report.peer_addr.addr[0]);
+
+			ret_code_t err_code;
+		    data_t     adv_data;
+		    data_t     dev_name;
+
+		    // Initialize advertisement report for parsing
+		    adv_data.p_data   = (uint8_t *)p_gap_evt->params.adv_report.data;
+		    adv_data.data_len = p_gap_evt->params.adv_report.dlen;
+
+		    //search for advertising names
+		    err_code = adv_report_parse(BLE_GAP_AD_TYPE_COMPLETE_LOCAL_NAME, &adv_data, &dev_name);
+		    if (err_code == NRF_SUCCESS)
+		    {
+		    	NRF_LOG_INFO("--------------");
+				NRF_LOG_INFO("dev_name = %s", dev_name.p_data);
+				NRF_LOG_FLUSH();
+
+				//如果地址不存在
+				if( find_mac_addr((uint8_t *)p_gap_evt->params.adv_report.peer_addr.addr, &gScan_Result) == false )
+				{
+					//记录这个设备的名称
+					if( dev_name.data_len >= DEV_NAME_MAX )
+						memcpy(gScan_Result.dev_inof[gScan_Result.num].name, dev_name.p_data, DEV_NAME_MAX);
+					else
+						memcpy(gScan_Result.dev_inof[gScan_Result.num].name, dev_name.p_data, dev_name.data_len);
+					//记录这个设备的MAC地址
+					memcpy(&gScan_Result.dev_inof[gScan_Result.num].addr, &p_gap_evt->params.adv_report.peer_addr, BLE_GAP_ADDR_LEN+1);
+					//将找到的设备数量加一
+					gScan_Result.num ++;
+					//如果超过最大设备数量限制，强制将扫描结束
+					if( gScan_Result.num >= DEV_INOF_MAX )
+					{
+						Connect_Status = CONNECT_SCAN_COMPLETED;
+					}
+				}
+				
+				//(void) sd_ble_gap_scan_stop();
+		    }
 			
+			/*
             if (strlen(m_target_periph_name) != 0)
             {
                 if (find_adv_name(&p_gap_evt->params.adv_report, m_target_periph_name))
@@ -798,6 +840,7 @@ static void on_ble_central_evt(ble_evt_t const * p_ble_evt)
                     }
                 }
             }
+            */
         } break; // BLE_GAP_ADV_REPORT
 
         case BLE_GAP_EVT_TIMEOUT:
@@ -1338,7 +1381,11 @@ static void timer_init(void)
 	err_code = app_timer_create(&m_uart_rx_timer_id,
 									APP_TIMER_MODE_REPEATED,
 									uart_rx_timeout_handler);
+    APP_ERROR_CHECK(err_code);
 
+	err_code = app_timer_create(&m_connect_timer_id,
+									APP_TIMER_MODE_REPEATED,
+									connect_fsm_handler);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -1350,6 +1397,8 @@ static void application_timers_start(void)
     err_code = app_timer_start(m_uart_tx_timer_id, UART_TX_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
 	err_code = app_timer_start(m_uart_rx_timer_id, UART_RX_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
+	err_code = app_timer_start(m_connect_timer_id, CONNECT_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -1384,7 +1433,7 @@ int main(void)
     }
 
     NRF_LOG_INFO("Q-Track Relay example started.");
-		application_timers_start();
+	application_timers_start();
 
 	nrf_gpio_pin_set(BSP_LED_0);
 	nrf_gpio_pin_set(BSP_LED_1);

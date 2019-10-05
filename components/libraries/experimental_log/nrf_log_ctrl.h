@@ -108,11 +108,12 @@ typedef uint32_t (*nrf_log_timestamp_func_t)(void);
 #define NRF_LOG_FLUSH()      NRF_LOG_INTERNAL_FLUSH()
 
 /** @brief Macro for flushing log data before reset.
- *
+ *			重置之前刷新日志数据的宏。
  * @note If logs are not deferred, this call has no use and is empty.
- *
+ *			如果不推迟日志，则此调用无用，并且为空。
  * @note If RTT is used, then a breakpoint is hit once flushed.
- */
+ 			如果使用RTT，则刷新后会命中一个断点。
+ */		
 #define NRF_LOG_FINAL_FLUSH() NRF_LOG_INTERNAL_FINAL_FLUSH()
 
 /**

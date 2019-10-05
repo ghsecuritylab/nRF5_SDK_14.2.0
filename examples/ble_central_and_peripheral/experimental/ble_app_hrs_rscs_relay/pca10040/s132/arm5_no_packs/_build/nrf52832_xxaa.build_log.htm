@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: ¦ÌVision V5.14.0.0
 Copyright (C) 2015 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: sy sy, sy, LIC=UJWPC-7BCS0-MMB9I-T0V63-5ZIPV-UIW1R
+License Information: sy sy, sy, LIC=YA3WF-6C59Z-1PCZ5-GY7NU-MU3X0-I04NW
  
 Tool Versions:
 Toolchain:       MDK-ARM Standard  Version: 5.14.0.0
@@ -21,17 +21,19 @@ Target DLL:      Segger\JL2CM3.dll V2.99.13.0
 Dialog DLL:      TCM.DLL V1.14.4.0
  
 <h2>Project:</h2>
-F:\GitHub\nRF5_SDK_14.2.0\examples\ble_central_and_peripheral\experimental\ble_app_hrs_rscs_relay\pca10040\s132\arm5_no_packs\ble_app_hrs_rscs_relay_pca10040_s132.uvprojx
-Project File Date:  06/11/2019
+D:\GitHub\nRF5_SDK_14.2.0\examples\ble_central_and_peripheral\experimental\ble_app_hrs_rscs_relay\pca10040\s132\arm5_no_packs\ble_app_hrs_rscs_relay_pca10040_s132.uvprojx
+Project File Date:  10/05/2019
 
 <h2>Output:</h2>
 Build target 'nrf52832_xxaa'
-compiling main.c...
 compiling uart_k50.c...
+..\..\..\uart_k50.c(179): warning:  #177-D: variable "err_code" was declared but never referenced
+        ret_code_t err_code;
+..\..\..\uart_k50.c: 1 warning, 0 errors
 linking...
-Program Size: Code=42388 RO-data=3824 RW-data=1988 ZI-data=14100  
+Program Size: Code=42832 RO-data=3808 RW-data=2000 ZI-data=14408  
 FromELF: creating hex file...
-".\_build\nrf52832_xxaa.axf" - 0 Error(s), 0 Warning(s).
+".\_build\nrf52832_xxaa.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -48,19 +50,18 @@ Package Vendor: NordicSemiconductor
    * Component: Startup Version: 8.15.0
 
 <h2>Collection of Component include folders:</h2>
-  F:\GitHub\nRF5_SDK_14.2.0\examples\ble_central_and_peripheral\experimental\ble_app_hrs_rscs_relay\pca10040\s132\arm5_no_packs\RTE
+  D:\GitHub\nRF5_SDK_14.2.0\examples\ble_central_and_peripheral\experimental\ble_app_hrs_rscs_relay\pca10040\s132\arm5_no_packs\RTE
   C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include
   C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.15.0\Device\Include
-  C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\8.24.1\Device\Include
 
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:4.3.0
 
    * Component: NordicSemiconductor::Device:Startup:8.15.0
-      Include file:  Device\Include\system_nrf52.h
       Source file:   Device\Source\arm\arm_startup_nrf52.s
       Source file:   Device\Source\system_nrf52.c
+      Include file:  Device\Include\system_nrf52.h
 </pre>
 </body>
 </html>
