@@ -106,8 +106,8 @@ NRF_SDH_BLE_OBSERVER(_name ## _obs,                                             
 /**@brief HRS Client event type. */
 typedef enum
 {
-    BLE_HRS_C_EVT_DISCOVERY_COMPLETE = 1,  /**< Event indicating that the Heart Rate Service has been discovered at the peer. */
-    BLE_HRS_C_EVT_HRM_NOTIFICATION         /**< Event indicating that a notification of the Heart Rate Measurement characteristic has been received from the peer. */
+    BLE_HRS_C_EVT_DISCOVERY_COMPLETE = 1,  /**< 表示已在同伴处发现心率服务的事件。 Event indicating that the Heart Rate Service has been discovered at the peer. */
+    BLE_HRS_C_EVT_HRM_NOTIFICATION         /**< 指示已从对等方接收到心率测量特性的通知的事件。 Event indicating that a notification of the Heart Rate Measurement characteristic has been received from the peer. */
 } ble_hrs_c_evt_type_t;
 
 /** @} */

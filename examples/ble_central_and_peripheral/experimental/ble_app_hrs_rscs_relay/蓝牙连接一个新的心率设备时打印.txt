@@ -1,0 +1,24 @@
+<info> app: uart_tx_timeout_handler
+
+<info> app: uart_tx_timeout_handler
+
+<info> app: Fast advertising.
+<info> app: Q-Track Relay example started.
+<info> app: uart_tx_timeout_handler
+
+<info> app: BLE_GAP_EVT_CONNECTED
+<info> app: Attempt to find HRS or RSC on conn_handle 0x1
+<info> app: HRS discovered on conn_handle 0x1
+<info> app: uart_tx_timeout_handler
+
+<info> app: PM_EVT_CONN_SEC_SUCCEEDED
+<info> app: Connection secured: role: 2, conn_handle: 0x1, procedure: 1.
+<info> app: Heart Rate = 0
+<info> app: uart_tx_timeout_handler
+
+<info> app: Heart Rate = 0
+<info> app: uart_tx_timeout_handler
+
+<info> app: Heart Rate = 0
+<info> app: uart_tx_timeout_handler
+
