@@ -24,10 +24,11 @@ struct __attribute__((packed)) Send_HRS
 
 #define DEV_NAME_MAX (20)
 
+//设备的信息
 struct Dev_Inof
 {
-	uint8_t name[DEV_NAME_MAX];
-	ble_gap_addr_t addr;
+	uint8_t name[DEV_NAME_MAX];	//设备的名称
+	ble_gap_addr_t addr;		//设备的mac地址
 };
 
 #define DEV_INOF_MAX (10)
@@ -35,10 +36,10 @@ struct Dev_Inof
 //扫描结果包
 struct Scan_Result
 {
-	uint8_t head;
-	uint8_t type;
-	uint8_t num;
-	struct Dev_Inof dev_inof[DEV_INOF_MAX];
+	uint8_t head;	//包头
+	uint8_t type;	//类型
+	uint8_t num;	//设备数量
+	struct Dev_Inof dev_inof[DEV_INOF_MAX];	//设备的信息
 };
 
 //连接状态机

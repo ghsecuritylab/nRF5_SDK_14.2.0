@@ -1406,7 +1406,6 @@ int main(void)
 {
     bool erase_bonds;
 
-		uart_init();
     log_init();
     timer_init();
     buttons_leds_init(&erase_bonds);
@@ -1420,7 +1419,8 @@ int main(void)
     rscs_c_init();
     services_init();
     advertising_init();
-	
+
+	uart_init();
     if (erase_bonds == true)
     {
         // Scanning and advertising is done upon PM_EVT_PEERS_DELETE_SUCCEEDED event.
@@ -1437,6 +1437,8 @@ int main(void)
 
 	nrf_gpio_pin_set(BSP_LED_0);
 	nrf_gpio_pin_set(BSP_LED_1);
+
+	NRF_LOG_INFO("size = %d", sizeof(struct Scan_Result));
 
     for (;;)
     {

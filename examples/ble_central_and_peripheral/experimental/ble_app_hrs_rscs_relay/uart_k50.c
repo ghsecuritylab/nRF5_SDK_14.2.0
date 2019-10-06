@@ -83,7 +83,7 @@ void uart_init(void)
 	gSend_HRS.type = 0x02;
 	gSend_HRS.status = NOT_CONNECTED;
 	gSend_HRS.hrs_data = 0x00;
-	gSend_HRS.CRC = 0x00;
+	gSend_HRS.CRC = 0x55;
 }
 
 uint16_t uart_read(uint8_t * buff, uint16_t len)
@@ -221,12 +221,12 @@ void connect_fsm_handler(void * p_context)
 			gScan_Result.head = 0x1F;
 			gScan_Result.type = 0x01;
 
-			NRF_LOG_INFO("dev_name = %d", gScan_Result.num );
+			NRF_LOG_INFO("scan dev num = %d", gScan_Result.num );
 			for(uint32_t i = 0; i<gScan_Result.num; i++)
 			{
-				NRF_LOG_INFO("dev_name %d = %s", i, gScan_Result.dev_inof[i].name );
+				NRF_LOG_INFO("dev %d name = %s", i, gScan_Result.dev_inof[i].name );
 				NRF_LOG_FLUSH();
-				NRF_LOG_INFO("mac = %x %x %x %x %x %x", gScan_Result.dev_inof[i].addr.addr[0], gScan_Result.dev_inof[i].addr.addr[1],
+				NRF_LOG_INFO("dev smac = %x %x %x %x %x %x", gScan_Result.dev_inof[i].addr.addr[0], gScan_Result.dev_inof[i].addr.addr[1],
 					gScan_Result.dev_inof[i].addr.addr[2], gScan_Result.dev_inof[i].addr.addr[3], gScan_Result.dev_inof[i].addr.addr[4], 
 					gScan_Result.dev_inof[i].addr.addr[5]);
 			}
