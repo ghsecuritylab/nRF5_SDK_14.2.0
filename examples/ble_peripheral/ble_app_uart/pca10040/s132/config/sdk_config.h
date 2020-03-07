@@ -46,6 +46,26 @@
 #ifdef USE_APP_CONFIG
 #include "app_config.h"
 #endif
+
+// <h> Board Select 
+
+//==========================================================
+// <q> BOARD_EBYTE  - Evaluation board
+
+#ifndef BOARD_EBYTE
+#define BOARD_EBYTE 1
+#endif
+
+//==========================================================
+// <q> BOARD_K50  - Progect board
+
+#ifndef BOARD_K50
+#define BOARD_K50 0
+#endif
+
+// </h> 
+//==========================================================
+
 // <h> Board Support 
 
 //==========================================================
@@ -3149,7 +3169,7 @@
 // <4=> Debug 
 
 #ifndef NRF_LOG_DEFAULT_LEVEL
-#define NRF_LOG_DEFAULT_LEVEL 3
+#define NRF_LOG_DEFAULT_LEVEL 4
 #endif
 
 // <q> NRF_LOG_DEFERRED  - Enable deffered logger.

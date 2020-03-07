@@ -42,6 +42,7 @@
 #include "ble.h"
 #include "ble_nus.h"
 #include "ble_srv_common.h"
+#include "nrf_log.h"
 
 
 #define BLE_UUID_NUS_TX_CHARACTERISTIC 0x0003                      /**< The UUID of the TX Characteristic. */
@@ -236,24 +237,30 @@ void ble_nus_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context)
         return;
     }
 
+	NRF_LOG_INFO("run ble_nus_on_ble_evt! evt_id = %d", p_ble_evt->header.evt_id);
+
     ble_nus_t * p_nus = (ble_nus_t *)p_context;
 
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
+			NRF_LOG_INFO("BLE_GAP_EVT_CONNECTED!");
             on_connect(p_nus, p_ble_evt);
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
+			NRF_LOG_INFO("BLE_GAP_EVT_DISCONNECTED!");
             on_disconnect(p_nus, p_ble_evt);
             break;
 
         case BLE_GATTS_EVT_WRITE:
+			NRF_LOG_INFO("BLE_GATTS_EVT_WRITE!");
             on_write(p_nus, p_ble_evt);
             break;
 
         case BLE_GATTS_EVT_HVN_TX_COMPLETE:
         {
+        	NRF_LOG_INFO("BLE_GATTS_EVT_HVN_TX_COMPLETE!");
             //notify with empty data that some tx was completed.
             ble_nus_evt_t evt = {
                     .type = BLE_NUS_EVT_TX_RDY,

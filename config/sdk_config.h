@@ -183,7 +183,7 @@
 // <4=> Debug 
 
 #ifndef ANT_BPWR_LOG_LEVEL
-#define ANT_BPWR_LOG_LEVEL 3
+#define ANT_BPWR_LOG_LEVEL 4
 #endif
 
 // <o> ANT_BPWR_INFO_COLOR  - ANSI escape code prefix.
